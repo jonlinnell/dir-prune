@@ -17,10 +17,14 @@ if (
 
 const target = path.resolve(TARGET)
 
-const logDeletion = filename => fs.writeFile(
+const logDeletion = file => fs.writeFile(
   path.join(target, 'logs', `${moment().format('YYYYMMDD')}.log`),
-  `${filename}`,
-  err => process.stderr.write(err)
+  `[${moment().format('HH:mm:ss')}] ${file} deleted.\n`,
+  {
+    encoding: 'utf8',
+    flag: 'a+',
+  },
+  err => { if (err) { process.stderr.write(err) } }
 )
 
 fs.readdir(target, (error, files) => {
