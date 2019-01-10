@@ -17,6 +17,12 @@ if (
 
 const target = path.resolve(TARGET)
 
+const logDeletion = filename => fs.writeFile(
+  path.join(target, 'logs', `${moment().format('YYYYMMDD')}.log`),
+  `${filename}`,
+  err => process.stderr.write(err)
+)
+
 fs.readdir(target, (error, files) => {
   if (error) throw new Error(error)
 
@@ -29,7 +35,11 @@ fs.readdir(target, (error, files) => {
 
       if (deleteDate < moment()) {
         fs.unlink(resolvedFile, (unlinkError) => {
-          if (unlinkError) { process.stderr.write(`There was an error: ${unlinkError}.\n`) }
+          if (unlinkError) {
+            process.stderr.write(`There was an error: ${unlinkError}.\n`)
+          } else {
+            logDeletion(file)
+          }
         })
       }
     }
